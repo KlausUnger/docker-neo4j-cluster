@@ -1,0 +1,23 @@
+machine:
+  services:
+      - docker
+dependencies:
+  override:
+    - docker build -t wayblazer/docker-neo4j-cluster:latest .
+
+#TODO: Until we can curl the host, not worth the build time to do this.
+test:
+  override:
+    - echo "Skip Tests"
+deployment:
+  release:
+    branch: /v[0-9]+(\.[0-9]+)*-[a-zA-Z0-9]+/
+    commands:
+      - docker login -e $DOCKERHUB_EMAIL -u $DOCKERHUB_USER -p $DOCKERHUB_PASSWORD
+      - docker tag wayblazer/docker-neo4j-cluster:latest wayblazer/docker-neo4j-cluster:$CIRCLE_TAG
+      - docker push wayblazer/docker-neo4j-cluster:$CIRCLE_TAG
+  latest:
+    branch: master
+    commands:
+      - docker login -e $DOCKERHUB_EMAIL -u $DOCKERHUB_USER -p $DOCKERHUB_PASSWORD
+      - docker push wayblazer/docker-neo4j-cluster
