@@ -12,7 +12,7 @@ RUN apt-get install -y wget curl
 RUN wget -O - http://debian.neo4j.org/neotechnology.gpg.key | apt-key add -
 RUN echo 'deb http://debian.neo4j.org/repo stable/' > /etc/apt/sources.list.d/neo4j.list
 RUN apt-get update -y
-RUN apt-get install -y neo4j-enterprise neo4j-arbiter supervisor
+RUN apt-get install -y neo4j-enterprise=2.2.5 neo4j-arbiter=2.2.5 supervisor
 
 # cleanup
 RUN apt-get autoremove -y wget
