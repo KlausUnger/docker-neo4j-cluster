@@ -1,7 +1,7 @@
 # --- NEO4J CLUSTER ---
 
 FROM ubuntu:trusty
-MAINTAINER Matthieu Fronton <fronton@ekino.com>
+MAINTAINER Kevin Kuhl <kevin@wayblazer.com>
 ENV DEBIAN_FRONTEND noninteractive
 
 # required tools
