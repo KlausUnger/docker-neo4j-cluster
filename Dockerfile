@@ -25,6 +25,9 @@ ADD supervisord.conf /etc/supervisor/conf.d/neo4j.conf
 ADD neo4j.properties /etc/neo4j/neo4j.properties
 #ADD neo4j-server.properties /etc/neo4j/neo4j-server.properties
 
+#Mount data and logs
+VOLUME ["/data", "/logs"]
+
 ENV REMOTE_HTTP true
 ENV REMOTE_SHELL true
 
