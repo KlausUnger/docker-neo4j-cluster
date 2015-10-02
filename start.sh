@@ -68,6 +68,12 @@ ip addr | awk '/inet /{print $2}'
 ) | awk '{print "   review> "$0}'
 echo
 
-echo "==> Starting Neo4J server (with supervisord)"
-echo
-supervisord -n
+if [ "$ARBITER" = "true" ]; then
+  echo "==> Starting Neo4J Arbiter (with supervisord)"
+  echo
+  supervisord -n -c /etc/supervisor/conf.d/arbiter.conf
+else
+  echo "==> Starting Neo4J Server (with supervisord)"
+  echo
+  supervisord -n -c /etc/supervisor/conf.d/server.conf
+fi
