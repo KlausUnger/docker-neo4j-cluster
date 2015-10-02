@@ -23,7 +23,8 @@ RUN rm -rf /var/lib/apt/lists/*
 ADD start.sh /start.sh
 ADD supervisord.conf /etc/supervisor/conf.d/neo4j.conf
 ADD neo4j.properties /etc/neo4j/neo4j.properties
-#ADD neo4j-server.properties /etc/neo4j/neo4j-server.properties
+ADD neo4j-server.properties /etc/neo4j/neo4j-server.properties
+RUN touch /tmp/rrd
 
 #Mount data and logs
 VOLUME ["/data", "/logs"]
