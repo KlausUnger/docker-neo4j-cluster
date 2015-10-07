@@ -10,6 +10,20 @@ echo "       \/        \/\/             \/          \/      \/    \/       ";
 echo ""
 #set -x
 
+#If this has already been started, just start it don't process the configs.
+if [ -f /tmp/.lock ]; then
+  echo "Container has been initialized. Just starting supervisord."
+  if [ "$ARBITER" = "true" ]; then
+    echo "==> Starting Neo4J Arbiter (with supervisord)"
+    echo
+    supervisord -n -c /etc/supervisor/conf.d/arbiter.conf
+  else
+    echo "==> Starting Neo4J Server (with supervisord)"
+    echo
+    supervisord -n -c /etc/supervisor/conf.d/server.conf
+  fi
+fi
+
 # Check of env variable. Complains+Help if missing
 if [ -z "$SERVER_ID" ]; then
   echo >&2 "--------------------------------------------------------------------------------"
@@ -71,9 +85,11 @@ echo
 if [ "$ARBITER" = "true" ]; then
   echo "==> Starting Neo4J Arbiter (with supervisord)"
   echo
+  touch /tmp/.lock
   supervisord -n -c /etc/supervisor/conf.d/arbiter.conf
 else
   echo "==> Starting Neo4J Server (with supervisord)"
   echo
+  touch /tmp/.lock
   supervisord -n -c /etc/supervisor/conf.d/server.conf
 fi
