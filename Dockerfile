@@ -24,7 +24,8 @@ ADD server_supervisord.conf /etc/supervisor/conf.d/server.conf
 ADD neo4j.properties /etc/neo4j/neo4j.properties
 ADD neo4j-server.properties /etc/neo4j/neo4j-server.properties
 
-ADD plugins/ /usr/share/neo4j/plugins
+#Stage these for when $ES_HOST is used
+ADD plugins/* /tmp/neo4j/plugins/
 
 RUN touch /tmp/rrd
 
