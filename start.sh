@@ -10,6 +10,14 @@ echo "       \/        \/\/             \/          \/      \/    \/       ";
 echo ""
 #set -x
 
+#Handler for SIGTERM/INT from `docker stop` or Ctl+C
+_term() {
+  echo "Kill signal received, stopping supervisor."
+  kill -TERM "$PID" 2>/dev/null
+}
+
+trap _term TERM INT
+
 #If this has already been started, just start it don't process the configs.
 if [ -f /tmp/.lock ]; then
   echo "Container has already been initialized. Starting supervisord."
@@ -93,9 +101,13 @@ if [ "$ARBITER" = "true" ]; then
   echo
   touch /tmp/.lock
   supervisord -n -c /etc/supervisor/conf.d/arbiter.conf
+  PID=$!
+  wait $PID
 else
   echo "==> Starting Neo4J Server (with supervisord)"
   echo
   touch /tmp/.lock
   supervisord -n -c /etc/supervisor/conf.d/server.conf
+  PID=$!
+  wait $PID
 fi
