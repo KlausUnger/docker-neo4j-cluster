@@ -10,9 +10,17 @@ echo "       \/        \/\/             \/          \/      \/    \/       ";
 echo ""
 #set -x
 
+#Handler for SIGTERM/INT from `docker stop` or Ctl+C
+_term() {
+  echo "Kill signal received, stopping supervisor."
+  kill -TERM "$PID" 2>/dev/null
+}
+
+trap _term TERM INT
+
 #If this has already been started, just start it don't process the configs.
 if [ -f /tmp/.lock ]; then
-  echo "Container has been initialized. Just starting supervisord."
+  echo "Container has already been initialized. Starting supervisord."
   if [ "$ARBITER" = "true" ]; then
     echo "==> Starting Neo4J Arbiter (with supervisord)"
     echo
@@ -68,8 +76,14 @@ if [ "$REMOTE_SHELL" = "true" ]; then
   sed -i '/remote_shell_enabled/s/^#//' $CONFIG_FILE
 fi
 
-# Review config (for docker logs)
+if [ ! -z "$ES_HOST" ]; then
+  mv /tmp/neo4j/plugins/*  /usr/share/neo4j/plugins/
+  sed -i '/elasticsearch.host_name/s/^#//' $CONFIG_FILE
+  sed -i "s/ES_HOST/http:\/\/$ES_HOST:9200/" $CONFIG_FILE
+  sed -i '/elasticsearch.index_spec/s/^#//' $CONFIG_FILE
+fi
 
+# Review config (for docker logs)
 echo "==> Settings review"
 echo
 (
@@ -87,9 +101,13 @@ if [ "$ARBITER" = "true" ]; then
   echo
   touch /tmp/.lock
   supervisord -n -c /etc/supervisor/conf.d/arbiter.conf
+  PID=$!
+  wait $PID
 else
   echo "==> Starting Neo4J Server (with supervisord)"
   echo
   touch /tmp/.lock
   supervisord -n -c /etc/supervisor/conf.d/server.conf
+  PID=$!
+  wait $PID
 fi
