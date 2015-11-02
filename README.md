@@ -10,6 +10,10 @@ The frontend docker container `wayblazer/neo4j-cluster` runs the node applicatio
 - Logs are written to the `/logs` volume.
 - Authentication file (`auth`) can be mounted to `/var/lib/neo4j/data/dbms`.
 
+**Authentication**
+
+When you initially login to neo, it creates a file called `auth` in `/var/lib/neo4j/data/dbms`. It contains users and hashed passwords. To carry usernames and passwords across containers, you can store this file on your local system and mount it into the container via a volume. **If you do not do this, when you recreate a container, you will need to reset the user/password through the web ui.**
+
 **Running the Container:**
 
 Required environment variables (`-e`):
