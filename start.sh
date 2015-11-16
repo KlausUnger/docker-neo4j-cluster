@@ -96,7 +96,7 @@ ip addr | awk '/inet /{print $2}'
 ) | awk '{print "   review> "$0}'
 echo
 
-#TODO: Bug on line 104? Can you save the pid without '&'? Even if so need to put that in other places where we launch...
+#TODO: Bug on line 104? Can you save the pid without '&'? Even if so need to put that in other places where we launch..
 if [ "$ARBITER" = "true" ]; then
   echo "==> Starting Neo4J Arbiter (with supervisord)"
   echo
