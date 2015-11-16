@@ -24,11 +24,15 @@ if [ -f /tmp/.lock ]; then
   if [ "$ARBITER" = "true" ]; then
     echo "==> Starting Neo4J Arbiter (with supervisord)"
     echo
-    supervisord -n -c /etc/supervisor/conf.d/arbiter.conf
+    supervisord -c /etc/supervisor/conf.d/arbiter.conf &
+    PID=$!
+    wait $PID
   else
     echo "==> Starting Neo4J Server (with supervisord)"
     echo
-    supervisord -n -c /etc/supervisor/conf.d/server.conf
+    supervisord -c /etc/supervisor/conf.d/server.conf &
+    PID=$!
+    wait $PID
   fi
 fi
 
@@ -101,14 +105,14 @@ if [ "$ARBITER" = "true" ]; then
   echo "==> Starting Neo4J Arbiter (with supervisord)"
   echo
   touch /tmp/.lock
-  supervisord -n -c /etc/supervisor/conf.d/arbiter.conf
+  supervisord -c /etc/supervisor/conf.d/arbiter.conf &
   PID=$!
   wait $PID
 else
   echo "==> Starting Neo4J Server (with supervisord)"
   echo
   touch /tmp/.lock
-  supervisord -n -c /etc/supervisor/conf.d/server.conf
+  supervisord -c /etc/supervisor/conf.d/server.conf &
   PID=$!
   wait $PID
 fi
