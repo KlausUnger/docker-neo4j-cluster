@@ -23,6 +23,7 @@ ADD arbiter_supervisord.conf /etc/supervisor/conf.d/arbiter.conf
 ADD server_supervisord.conf /etc/supervisor/conf.d/server.conf
 ADD neo4j.properties /etc/neo4j/neo4j.properties
 ADD neo4j-server.properties /etc/neo4j/neo4j-server.properties
+ADD neo4j-wrapper.conf /etc/neo4j/neo4j-wrapper.conf
 
 #Stage these for when $ES_HOST is used
 ADD plugins/* /tmp/neo4j/plugins/
@@ -35,6 +36,7 @@ VOLUME ["/data", "/logs"]
 ENV REMOTE_HTTP true
 ENV REMOTE_SHELL true
 ENV ARBITER false
+ENV MAX_MEMORY 10000
 
 EXPOSE 5001
 EXPOSE 6001

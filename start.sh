@@ -47,10 +47,15 @@ fi
 # Customize config
 echo "==> Setting server IP config"
 CONFIG_FILE=/etc/neo4j/neo4j.properties
+WRAPPER_CONFIG=/etc/neo4j/neo4j-wrapper.conf
 SERVER_IP=$(ip route get 8.8.8.8 | awk 'NR==1{print $NF}')
 
 sed -i 's/SERVER_ID/'$SERVER_ID'/' $CONFIG_FILE
 sed -i 's/SERVER_IP/'$SERVER_IP'/' $CONFIG_FILE
+
+#Set up memory limit for Neo4j
+sed -i '/wrapper.java.maxmemory/s/^#//' $WRAPPER_CONFIG
+sed -i "/^wrapper.java.maxmemory/s/<max_memory>/$MAX_MEMORY/" $WRAPPER_CONFIG
 
 echo "==> Global settings"
 if [ "$SERVER_ID" = "1" ]; then
