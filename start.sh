@@ -27,12 +27,14 @@ if [ -f /tmp/.lock ]; then
     supervisord -c /etc/supervisor/conf.d/arbiter.conf &
     PID=$!
     wait $PID
+    exit 0;
   else
     echo "==> Starting Neo4J Server (with supervisord)"
     echo
     supervisord -c /etc/supervisor/conf.d/server.conf &
     PID=$!
     wait $PID
+    exit 0;
   fi
 fi
 
