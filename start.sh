@@ -54,7 +54,7 @@ WRAPPER_CONFIG=/etc/neo4j/neo4j-wrapper.conf
 SERVER_IP=$(ip addr show dev ethwe | grep 'inet ' | awk '{print $2}')
 
 sed -i 's/SERVER_ID/'$SERVER_ID'/' $CONFIG_FILE
-sed -i 's/SERVER_IP/'$SERVER_IP'/' $CONFIG_FILE
+sed -i 's/SERVER_IP/'$SERVER_IP:5001'/' $CONFIG_FILE
 
 #Set up memory bounds for Neo4j
 sed -i '/wrapper.java.maxmemory/s/^#//' $WRAPPER_CONFIG
