@@ -1,21 +1,23 @@
 FROM ubuntu:trusty
 MAINTAINER Kevin Kuhl <kevin@wayblazer.com>
+
 ENV DEBIAN_FRONTEND noninteractive
 
 # required tools
-RUN apt-get update
-RUN apt-get install -y wget curl
+RUN apt-get update -y && apt-get install -y wget curl
 
 # install neo4j
-RUN wget -O - http://debian.neo4j.org/neotechnology.gpg.key | apt-key add -
-RUN echo 'deb http://debian.neo4j.org/repo stable/' > /etc/apt/sources.list.d/neo4j.list
-RUN apt-get update -y
-RUN apt-get install -y neo4j-enterprise=2.3.1 neo4j-arbiter=2.3.1 supervisor
+RUN wget -O - http://debian.neo4j.org/neotechnology.gpg.key | apt-key add - && \
+    echo 'deb http://debian.neo4j.org/repo stable/' > /etc/apt/sources.list.d/neo4j.list
+RUN apt-get update -y && apt-get install -y \
+  neo4j-enterprise=2.3.1 \
+  neo4j-arbiter=2.3.1 \
+  supervisor
 
 # cleanup
-RUN apt-get autoremove -y wget curl
-RUN apt-get clean
-RUN rm -rf /var/lib/apt/lists/*
+RUN apt-get autoremove -y wget curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # configure
 ADD start.sh /start.sh
