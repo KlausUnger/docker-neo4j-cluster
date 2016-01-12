@@ -13,7 +13,7 @@ RUN apt-get update -y
 RUN apt-get install -y neo4j-enterprise=2.3.1 neo4j-arbiter=2.3.1 supervisor
 
 # cleanup
-RUN apt-get autoremove -y wget
+RUN apt-get autoremove -y wget curl
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/*
 
