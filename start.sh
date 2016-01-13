@@ -72,6 +72,11 @@ if [ "$SERVER_ID" = "1" ]; then
   sed -i '/^ha.allow_init_cluster/s/false/true/' $CONFIG_FILE
 fi
 
+if [ "$HA" = "false" ]; then
+  # All this node to init the cluster all alone (initial_hosts=127.0.0.1)
+  sed -i '/^org.neo4j.server.database.mode/s/HA/SINGLE/' $CONFIG_FILE
+fi
+
 OIFS=$IFS
 if [ ! -z "$CLUSTER_NODES" ]; then
   IFS=','

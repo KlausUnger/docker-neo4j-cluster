@@ -35,7 +35,12 @@ RUN touch /tmp/rrd
 #Mount data and logs
 VOLUME ["/data", "/logs"]
 
-ENV REMOTE_HTTP=true REMOTE_SHELL=true ARBITER=false INIT_MEMORY=3000 MAX_MEMORY=10000
+ENV REMOTE_HTTP=true \
+    REMOTE_SHELL=true \
+    ARBITER=false \
+    INIT_MEMORY=3000 \
+    MAX_MEMORY=10000 \
+    HA=true
 
 EXPOSE 5001 6001 7474 6362
 CMD ["/start.sh"]
