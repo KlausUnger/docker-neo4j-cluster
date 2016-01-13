@@ -51,10 +51,13 @@ echo "==> Setting server IP config"
 CONFIG_FILE=/etc/neo4j/neo4j.properties
 WRAPPER_CONFIG=/etc/neo4j/neo4j-wrapper.conf
 #get the weave interface's ip address
-SERVER_IP=$(ip addr show dev ethwe | grep 'inet ' | awk '{print $2}')
-
+SERVER_IP=$(ifconfig ethwe | grep 'inet ' | awk '{print $2}')
+OIFS=$IFS
+IFS=':'
+SERVER_IP=$(echo $SERVER_IP | awk '{print $2}')
+IFS=$OIFS
 sed -i 's/SERVER_ID/'$SERVER_ID'/' $CONFIG_FILE
-sed -i 's/SERVER_IP/'$SERVER_IP:5001'/' $CONFIG_FILE
+sed -i 's/SERVER_IP/'$SERVER_IP'/' $CONFIG_FILE
 
 #Set up memory bounds for Neo4j
 sed -i '/wrapper.java.maxmemory/s/^#//' $WRAPPER_CONFIG
