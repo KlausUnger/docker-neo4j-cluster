@@ -50,8 +50,12 @@ fi
 echo "==> Setting server IP config"
 CONFIG_FILE=/etc/neo4j/neo4j.properties
 WRAPPER_CONFIG=/etc/neo4j/neo4j-wrapper.conf
-SERVER_IP=$(ip route get 8.8.8.8 | awk 'NR==1{print $NF}')
-
+#get the weave interface's ip address
+SERVER_IP=$(ifconfig ethwe | grep 'inet ' | awk '{print $2}')
+OIFS=$IFS
+IFS=':'
+SERVER_IP=$(echo $SERVER_IP | awk '{print $2}')
+IFS=$OIFS
 sed -i 's/SERVER_ID/'$SERVER_ID'/' $CONFIG_FILE
 sed -i 's/SERVER_IP/'$SERVER_IP'/' $CONFIG_FILE
 
@@ -66,6 +70,11 @@ echo "==> Global settings"
 if [ "$SERVER_ID" = "1" ]; then
   # All this node to init the cluster all alone (initial_hosts=127.0.0.1)
   sed -i '/^ha.allow_init_cluster/s/false/true/' $CONFIG_FILE
+fi
+
+if [ "$HA" = "false" ]; then
+  # All this node to init the cluster all alone (initial_hosts=127.0.0.1)
+  sed -i '/^org.neo4j.server.database.mode/s/HA/SINGLE/' $CONFIG_FILE
 fi
 
 OIFS=$IFS
