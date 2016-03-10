@@ -48,10 +48,15 @@ fi
 
 # Customize config
 echo "==> Setting server IP config"
-CONFIG_FILE=/etc/neo4j/neo4j.properties
+CONFIG_FILE=/etc/neo4j/neo4j.conf
 WRAPPER_CONFIG=/etc/neo4j/neo4j-wrapper.conf
 #get the weave interface's ip address
-SERVER_IP=$(ifconfig ethwe | grep 'inet ' | awk '{print $2}')
+INTERFACE=eth0
+ifconfig ethwe 1>&2> /dev/null
+if [ $? -eq 0 ]; then
+  INTERFACE=ethwe
+fi
+SERVER_IP=$(ifconfig $INTERFACE | grep 'inet ' | awk '{print $2}')
 OIFS=$IFS
 IFS=':'
 SERVER_IP=$(echo $SERVER_IP | awk '{print $2}')
@@ -66,16 +71,18 @@ sed -i "/^wrapper.java.maxmemory/s/<max_memory>/$MAX_MEMORY/" $WRAPPER_CONFIG
 sed -i '/wrapper.java.initmemory/s/^#//' $WRAPPER_CONFIG
 sed -i "/^wrapper.java.initmemory/s/<init_memory>/$INIT_MEMORY/" $WRAPPER_CONFIG
 
+#Configure page cache
+if [ ! -z "$CACHE_MEMORY" ]; then
+  sed -i '/dbms.pagecache.memory/s/^#//' $CONFIG_FILE
+  sed -i "/dbms.pagecache.memory/s/PAGE_CACHE/$CACHE_MEMORY/" $CONFIG_FILE
+fi
+
 echo "==> Global settings"
 if [ "$SERVER_ID" = "1" ]; then
   # All this node to init the cluster all alone (initial_hosts=127.0.0.1)
   sed -i '/^ha.allow_init_cluster/s/false/true/' $CONFIG_FILE
 fi
 
-if [ "$HA" = "false" ]; then
-  # All this node to init the cluster all alone (initial_hosts=127.0.0.1)
-  sed -i '/^org.neo4j.server.database.mode/s/HA/SINGLE/' $CONFIG_FILE
-fi
 
 OIFS=$IFS
 if [ ! -z "$CLUSTER_NODES" ]; then
@@ -89,10 +96,13 @@ fi
 IFS=$OIFS
 
 echo "==> Server settings"
-sed -i 's/^#\(org.neo4j.server.database.mode=\)/\1/' /etc/neo4j/neo4j-server.properties
+#Set the database mode and print to logs.
+echo "Setting server mode to $MODE"
+sed -i "/org.neo4j.server.database.mode/s/HA/$MODE/" $CONFIG_FILE
+sed -i 's/^#\(org.neo4j.server.database.mode=\)/\1/' $CONFIG_FILE
 
 if [ "$REMOTE_HTTP" = "true" ]; then
-  sed -i '/org.neo4j.server.webserver.address/s/^#//' /etc/neo4j/neo4j-server.properties
+  sed -i '/org.neo4j.server.webserver.address/s/^#//' $CONFIG_FILE
 fi
 
 if [ "$REMOTE_SHELL" = "true" ]; then
@@ -119,19 +129,9 @@ ip addr | awk '/inet /{print $2}'
 ) | awk '{print "   review> "$0}'
 echo
 
-#TODO: Bug on line 104? Can you save the pid without '&'? Even if so need to put that in other places where we launch..
-if [ "$ARBITER" = "true" ]; then
-  echo "==> Starting Neo4J Arbiter (with supervisord)"
-  echo
-  touch /tmp/.lock
-  supervisord -c /etc/supervisor/conf.d/arbiter.conf &
-  PID=$!
-  wait $PID
-else
-  echo "==> Starting Neo4J Server (with supervisord)"
-  echo
-  touch /tmp/.lock
-  supervisord -c /etc/supervisor/conf.d/server.conf &
-  PID=$!
-  wait $PID
-fi
+echo "==> Starting Neo4J Server (with supervisord)"
+echo
+touch /tmp/.lock
+supervisord -c /etc/supervisor/conf.d/server.conf &
+PID=$!
+wait $PID
