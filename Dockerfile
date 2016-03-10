@@ -1,4 +1,4 @@
-FROM ubuntu:trusty
+FROM java:8
 MAINTAINER Kevin Kuhl <kevin@wayblazer.com>
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -8,10 +8,9 @@ RUN apt-get update -y && apt-get install -y wget curl
 
 # install neo4j
 RUN wget -O - http://debian.neo4j.org/neotechnology.gpg.key | apt-key add - && \
-    echo 'deb http://debian.neo4j.org/repo stable/' > /etc/apt/sources.list.d/neo4j.list
+    echo 'deb http://debian.neo4j.org/repo testing/' > /etc/apt/sources.list.d/neo4j.list
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
-  neo4j-enterprise=2.3.2 \
-  neo4j-arbiter=2.3.2 \
+  neo4j-enterprise=3.0.0.M05 \
   supervisor
 
 # cleanup
@@ -21,11 +20,11 @@ RUN apt-get autoremove -y wget curl && \
 
 # configure
 ADD start.sh /start.sh
-ADD arbiter_supervisord.conf /etc/supervisor/conf.d/arbiter.conf
-ADD server_supervisord.conf /etc/supervisor/conf.d/server.conf
-ADD neo4j.properties /etc/neo4j/neo4j.properties
-ADD neo4j-server.properties /etc/neo4j/neo4j-server.properties
-ADD neo4j-wrapper.conf /etc/neo4j/neo4j-wrapper.conf
+#ADD arbiter_supervisord.conf /etc/supervisor/conf.d/arbiter.conf
+#ADD server_supervisord.conf /etc/supervisor/conf.d/server.conf
+#ADD neo4j.properties /etc/neo4j/neo4j.properties
+#ADD neo4j-server.properties /etc/neo4j/neo4j-server.properties
+#ADD neo4j-wrapper.conf /etc/neo4j/neo4j-wrapper.conf
 
 #Stage these for when $ES_HOST is used
 ADD plugins/* /tmp/neo4j/plugins/

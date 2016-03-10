@@ -68,7 +68,7 @@ sed -i "/^wrapper.java.initmemory/s/<init_memory>/$INIT_MEMORY/" $WRAPPER_CONFIG
 
 #Configure page cache
 if [ ! -z "$CACHE_MEMORY" ]; then
-  sed -i '/dbms.pagecache.memory/s/^#//' $WRAPPER_CONFIG
+  sed -i '/dbms.pagecache.memory/s/^#//' $CONFIG_FILE
   sed -i "/dbms.pagecache.memory/s/PAGE_CACHE/$CACHE_MEMORY/" $CONFIG_FILE
 fi
 
