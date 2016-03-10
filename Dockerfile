@@ -38,8 +38,8 @@ VOLUME ["/data", "/logs"]
 ENV REMOTE_HTTP=true \
     REMOTE_SHELL=true \
     ARBITER=false \
-    INIT_MEMORY=3000 \
-    MAX_MEMORY=10000 \
+    INIT_MEMORY=1024 \
+    MAX_MEMORY=3072 \
     HA=true
 
 EXPOSE 5001 6001 7474 6362

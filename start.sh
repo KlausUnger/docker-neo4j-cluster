@@ -66,6 +66,12 @@ sed -i "/^wrapper.java.maxmemory/s/<max_memory>/$MAX_MEMORY/" $WRAPPER_CONFIG
 sed -i '/wrapper.java.initmemory/s/^#//' $WRAPPER_CONFIG
 sed -i "/^wrapper.java.initmemory/s/<init_memory>/$INIT_MEMORY/" $WRAPPER_CONFIG
 
+#Configure page cache
+if [ ! -z "$CACHE_MEMORY" ]; then
+  sed -i '/dbms.pagecache.memory/s/^#//' $WRAPPER_CONFIG
+  sed -i "/dbms.pagecache.memory/s/PAGE_CACHE/$CACHE_MEMORY/" $CONFIG_FILE
+fi
+
 echo "==> Global settings"
 if [ "$SERVER_ID" = "1" ]; then
   # All this node to init the cluster all alone (initial_hosts=127.0.0.1)
