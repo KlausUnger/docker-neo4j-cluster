@@ -23,7 +23,7 @@ Optional environment variables:
 - ES_HOST: The hostname of the elasticsearch host, if needed for indexing.
 - ES_PORT: The port of the elasticsearch service, if needed for indexing.
 - CLUSTER_NODES: A comma separated list of hostnames that should make up the cluster. Includes the current servers hostname. Ex: `neo1.local,neo2.local,neo3.local`.
-- ARBITER: `True` or `False`. Whether to launch this server as an arbiter. [default=False]
+- MODE: The value of `org.neo4j.server.database.mode`. Any of `HA`, `SINGLE`, `ARBITER`. See neo4j docs for more info. [default=`SINGLE`]
 - REMOTE_HTTP: `True` or `False`. Enables web interface / http.
 - REMOTE_SHELL: `True` or `False`. Enables remote shell access.
 
@@ -41,10 +41,10 @@ docker run -d -v ./logs:/logs -v ./data:/data -p 7474:7474 -e SERVER_ID=1 waybla
 
 When launching multiple you need to provide both the SERVER_ID and the CLUSTER_NODES. The servers will not become available until both servers have registered with one another. Also note that if these are on the same host, they will need to store data and logs in different physical locations.
 
-**Example:**
+**Plain ol' Docker Example:**
 
 ```
-docker run -h neo1 -d -v ./logs/master:/logs -v ./data_master:/data -p 7474:7474 -e SERVER_ID=1 -e CLUSTER_NODES=neo1,neo2 wayblazer/neo4j-cluster
+docker run -h neo1 -d -v ./logs/master:/logs -v ./data_master:/data -p 7474:7474 -e SERVER_ID=1 -e MODE=HA -e CLUSTER_NODES=neo1,neo2 wayblazer/neo4j-cluster
 
-docker run -h neo2 -d -v ./logs/slave:/logs -v ./data_slave:/data -p 7474:7474 -e SERVER_ID=2 -e CLUSTER_NODES=neo1,neo2 wayblazer/neo4j-cluster
+docker run -h neo2 -d -v ./logs/slave:/logs -v ./data_slave:/data -p 7474:7474 -e SERVER_ID=2 -e MODE=HA -e CLUSTER_NODES=neo1,neo2 wayblazer/neo4j-cluster
 ```
