@@ -66,10 +66,10 @@ sed -i 's/SERVER_IP/'$SERVER_IP'/' $CONFIG_FILE
 
 #Set up memory bounds for Neo4j
 sed -i '/wrapper.java.maxmemory/s/^#//' $WRAPPER_CONFIG
-sed -i "/^wrapper.java.maxmemory/s/<max_memory>/$MAX_MEMORY/" $WRAPPER_CONFIG
+sed -i "/^wrapper.java.maxmemory/s/MAX_MEMORY/$MAX_MEMORY/" $WRAPPER_CONFIG
 
 sed -i '/wrapper.java.initmemory/s/^#//' $WRAPPER_CONFIG
-sed -i "/^wrapper.java.initmemory/s/<init_memory>/$INIT_MEMORY/" $WRAPPER_CONFIG
+sed -i "/^wrapper.java.initmemory/s/INIT_MEMORY/$INIT_MEMORY/" $WRAPPER_CONFIG
 
 #Configure page cache
 if [ ! -z "$CACHE_MEMORY" ]; then
