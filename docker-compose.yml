@@ -1,0 +1,13 @@
+neo4j:
+  build: .
+  container_name: neo4j
+  ports:
+    - 7474:7474
+    - 9999:9999
+  environment:
+    SERVER_ID: 1
+    JMX_ENABLED: 'true'
+    JMX_USER: wayblazer
+    JMX_PASSWORD: wayblazer
+    JMX_HOSTNAME: localhost
+    HTTP_LOG: 'true'
