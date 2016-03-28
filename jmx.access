@@ -1,0 +1,4 @@
+# Define a role called 'monitor' with readonly access:
+NEO4J_USER readonly
+# Uncomment this line to define a administrator role:
+#control readwrite

@@ -40,7 +40,9 @@ ENV REMOTE_HTTP=true \
     ARBITER=false \
     INIT_MEMORY=3000 \
     MAX_MEMORY=10000 \
-    HA=true
+    HA=true \
+    HTTP_LOG=false \
+    JMX_ENABLED=false
 
 EXPOSE 5001 6001 7474 6362
 CMD ["/start.sh"]

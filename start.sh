@@ -50,6 +50,10 @@ fi
 echo "==> Setting server IP config"
 CONFIG_FILE=/etc/neo4j/neo4j.properties
 WRAPPER_CONFIG=/etc/neo4j/neo4j-wrapper.conf
+SERVER_CONFIG=/etc/neo4j/neo4j-server.properties
+JMX_ACCESS_FILE=/etc/neo4j/jmx.access
+JMX_PASSWORD_FILE=/etc/neo4j/jmx.password
+
 #get the weave interface's ip address
 SERVER_IP=$(ifconfig ethwe | grep 'inet ' | awk '{print $2}')
 OIFS=$IFS
@@ -75,6 +79,26 @@ fi
 if [ "$HA" = "false" ]; then
   # All this node to init the cluster all alone (initial_hosts=127.0.0.1)
   sed -i '/^org.neo4j.server.database.mode/s/HA/SINGLE/' $CONFIG_FILE
+fi
+
+if [ "$HTTP_LOG" = "true" ]; then
+  sed -i '/^org.neo4j.server.http.log.enabled/s/false/true/' $SERVER_CONFIG
+fi
+
+if [ "$JMX_ENABLED" = "true" ]; then
+  # Check of env variable. Complains+Help if missing
+  if [ -z "$JMX_USER" ] || [ -z "$JMX_PASSWORD" ] || [ -z "$JMX_HOSTNAME" ]; then
+    echo >&2 "--------------------------------------------------------------------------------"
+    echo >&2 "- Missing mandatory JMX_USER and/or JMX_PASSWORD -"
+    echo >&2 "--------------------------------------------------------------------------------"
+    exit 1
+  fi
+
+  sed -i "/^NEO4J_USER/s/NEO4J_USER/$JMX_USER/" $JMX_ACCESS_FILE
+  sed -i "/^NEO4J_USER/s/NEO4J_PASSWORD/$JMX_PASSWORD/" $JMX_PASSWORD_FILE
+  sed -i "/^NEO4J_USER/s/NEO4J_USER/$JMX_USER/" $JMX_PASSWORD_FILE
+  sed -i '/^wrapper.java.additional=-Dcom.sun.management.jmxremote/s/^#//' $WRAPPER_CONFIG
+  sed -i "/^wrapper.java.additional=-Djava.rmi.server.hostname/s/HOST_NAME/$JMX_HOSTNAME/" $WRAPPER_CONFIG
 fi
 
 OIFS=$IFS
