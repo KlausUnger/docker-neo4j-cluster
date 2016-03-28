@@ -97,8 +97,9 @@ if [ "$JMX_ENABLED" = "true" ]; then
   sed -i "/^NEO4J_USER/s/NEO4J_USER/$JMX_USER/" $JMX_ACCESS_FILE
   sed -i "/^NEO4J_USER/s/NEO4J_PASSWORD/$JMX_PASSWORD/" $JMX_PASSWORD_FILE
   sed -i "/^NEO4J_USER/s/NEO4J_USER/$JMX_USER/" $JMX_PASSWORD_FILE
-  sed -i '/^wrapper.java.additional=-Dcom.sun.management.jmxremote/s/^#//' $WRAPPER_CONFIG
-  sed -i "/^wrapper.java.additional=-Djava.rmi.server.hostname/s/HOST_NAME/$JMX_HOSTNAME/" $WRAPPER_CONFIG
+  sed -i '/wrapper.java.additional=-Dcom.sun.management.jmxremote/s/^#//' $WRAPPER_CONFIG
+  sed -i "/wrapper.java.additional=-Djava.rmi.server.hostname/s/^#//" $WRAPPER_CONFIG
+  sed -i "/wrapper.java.additional=-Djava.rmi.server.hostname/s/HOST_NAME/$JMX_HOSTNAME/" $WRAPPER_CONFIG
 fi
 
 OIFS=$IFS
@@ -136,7 +137,7 @@ echo
 (
 echo " --- $(hostname) ---"
 echo "Graph settings :"
-grep --color -rE "allow_init_cluster|server_id|cluster_server|initial_hosts|\.server=|webserver\.address|database\.mode" /etc/neo4j/
+grep --color -rE "allow_init_cluster|server_id|cluster_server|initial_hosts|\.server=|webserver\.address|database\.mode|wrapper\.java\.additional=" /etc/neo4j/
 echo
 echo "Network settings :"
 ip addr | awk '/inet /{print $2}'

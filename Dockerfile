@@ -1,10 +1,8 @@
 FROM ubuntu:trusty
 MAINTAINER Kevin Kuhl <kevin@wayblazer.com>
 
-ENV DEBIAN_FRONTEND noninteractive
-
 # required tools
-RUN apt-get update -y && apt-get install -y wget curl
+RUN apt-get update -y && apt-get install -y wget curl vim
 
 # install neo4j
 RUN wget -O - http://debian.neo4j.org/neotechnology.gpg.key | apt-key add - && \
@@ -26,11 +24,14 @@ ADD server_supervisord.conf /etc/supervisor/conf.d/server.conf
 ADD neo4j.properties /etc/neo4j/neo4j.properties
 ADD neo4j-server.properties /etc/neo4j/neo4j-server.properties
 ADD neo4j-wrapper.conf /etc/neo4j/neo4j-wrapper.conf
+ADD jmx.access /etc/neo4j/jmx.access
+ADD jmx.password /etc/neo4j/jmx.password
+ADD neo4j-http-logging.xml /etc/neo4j/neo4j-http-logging.xml
 
 #Stage these for when $ES_HOST is used
 ADD plugins/* /tmp/neo4j/plugins/
 
-RUN touch /tmp/rrd
+RUN touch /tmp/rrd && chmod 600 /etc/neo4j/jmx.password
 
 #Mount data and logs
 VOLUME ["/data", "/logs"]
