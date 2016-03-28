@@ -1,8 +1,6 @@
 FROM java:8-jre
 MAINTAINER Kevin Kuhl <kevin@wayblazer.com>
 
-ENV DEBIAN_FRONTEND noninteractive
-
 # required tools
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
   wget \
@@ -26,12 +24,15 @@ RUN apt-get autoremove -y wget curl && \
 ADD start.sh /start.sh
 ADD neo4j.conf /etc/neo4j/neo4j.conf
 ADD neo4j-wrapper.conf /etc/neo4j/neo4j-wrapper.conf
-ADD server_supervisord.conf /etc/supervisor/conf.d/server.conf
+ADD jmx.access /etc/neo4j/jmx.access
+ADD jmx.password /etc/neo4j/jmx.password
+ADD neo4j-http-logging.xml /etc/neo4j/neo4j-http-logging.xml
+ADD supervisord.conf /etc/supervisor/conf.d/server.conf
 
 #Stage these for when $ES_HOST is used
 ADD plugins/* /tmp/neo4j/plugins/
 
-RUN touch /tmp/rrd
+RUN touch /tmp/rrd && chmod 600 /etc/neo4j/jmx.password
 
 #Mount data and logs
 VOLUME ["/data", "/logs"]
