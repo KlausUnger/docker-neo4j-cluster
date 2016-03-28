@@ -34,15 +34,20 @@ Optional environment variables:
 
 ### Single HA Server
 
-You can launch the server as a single, HA cluster node (*not* `SINGLE` mode). You do this by just specifying the `SERVER_ID=1`.
+You can launch the server as a single, HA cluster node (*not* `SINGLE` mode).  You can use the docker-compose file in the root of the directory to do this. You must have a local docker environment (see docker-machine on Google) for this to work.
 
-**Example:**
+Build the container from its current state.
+`docker-compose build`
 
-```
-docker run -d -v ./logs:/logs -v ./data:/data -p 7474:7474 -e SERVER_ID=1 wayblazer/neo4j-cluster
-```
+Run it.
+`docker-compose up -d`
+
+Check the logs.
+`docker-compose logs`
 
 ### Multi-node HA Cluster
+
+(Docker-compose to come.)
 
 When launching multiple you need to provide both the SERVER_ID and the CLUSTER_NODES. The servers will not become available until both servers have registered with one another. Also note that if these are on the same host, they will need to store data and logs in different physical locations.
 
