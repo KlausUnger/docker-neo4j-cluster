@@ -20,12 +20,17 @@ Required environment variables (`-e`):
 - SERVER_ID: An integer uniquely identifying the server in the cluster.
 
 Optional environment variables:
-- ES_HOST: The hostname of the elasticsearch host, if needed for indexing.
-- ES_PORT: The port of the elasticsearch service, if needed for indexing.
-- CLUSTER_NODES: A comma separated list of hostnames that should make up the cluster. Includes the current servers hostname. Ex: `neo1.local,neo2.local,neo3.local`.
-- MODE: The value of `org.neo4j.server.database.mode`. Any of `HA`, `SINGLE`, `ARBITER`. See neo4j docs for more info. [default=`SINGLE`]
-- REMOTE_HTTP: `True` or `False`. Enables web interface / http.
-- REMOTE_SHELL: `True` or `False`. Enables remote shell access.
+- `ES_HOST`: The hostname of the elasticsearch host, if needed for indexing.
+- `ES_PORT`: The port of the elasticsearch service, if needed for indexing.
+- `CLUSTER_NODES`: A comma separated list of hostnames that should make up the cluster. Includes the current servers hostname. Ex: `neo1.local,neo2.local,neo3.local`.
+- `ARBITER`: `true` or `false`. Whether to launch this server as an arbiter. [default=False]
+- `REMOTE_HTTP`: `true` or `false`. Enables web interface / http.
+- `REMOTE_SHELL`: `true` or `false`. Enables remote shell access.
+- `JMX_ENABLED`: `true` or `false`. Enables JMX on port 9999. If `true` requires below user/pass/hostname env vars. `false` by default.
+- `JMX_USER`: Readonly User (role) to access JMX by.
+- `JMX_PASSWORD`: Password allowing readonly access to JMX.
+- `JMX_HOSTNAME`: The hostname/ip that you will be using to access JMX (usually the ip or hostname of the server).
+- `HTTP_LOG`: `true` or `false`. Enables HTTP logs for the rest api to be written to `/logs`.
 
 ### Single HA Server
 

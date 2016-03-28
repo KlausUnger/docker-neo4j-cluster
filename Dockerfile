@@ -39,9 +39,12 @@ VOLUME ["/data", "/logs"]
 ENV REMOTE_HTTP=true \
     REMOTE_SHELL=true \
     ARBITER=false \
-    INIT_MEMORY=1024 \
-    MAX_MEMORY=3072 \
-    MODE=SINGLE
+    INIT_MEMORY=3000 \
+    MAX_MEMORY=3000 \
+    HA=true \
+    MODE=SINGLE \
+    HTTP_LOG=false \
+    JMX_ENABLED=false
 
 EXPOSE 7474
 CMD ["/start.sh"]
