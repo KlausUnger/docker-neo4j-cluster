@@ -1,4 +1,4 @@
-FROM ubuntu:trusty
+FROM java:openjdk-8-jre
 MAINTAINER Kevin Kuhl <kevin@wayblazer.com>
 
 # required tools
