@@ -85,6 +85,16 @@ if [ "$HTTP_LOG" = "true" ]; then
   sed -i '/^org.neo4j.server.http.log.enabled/s/false/true/' $SERVER_CONFIG
 fi
 
+if [ "$QUERY_LOG" = "true" ]; then
+  sed -i "/^dbms.querylog.enabled/s/false/true/" $CONFIG_FILE
+  if [ ! -z "$QUERY_THRESHOLD" ]; then
+    sed -i "/^dbms.querylog.threshold/s/0s/$QUERY_THRESHOLD/" $CONFIG_FILE
+  fi
+  if [ ! -z "$QUERY_MAX_ARCHIVES" ]; then
+    sed -i "/^dbms.querylog.threshold/s/7/$QUERY_MAX_ARCHIVES/" $CONFIG_FILE
+  fi
+fi
+
 if [ "$JMX_ENABLED" = "true" ]; then
   # Check of env variable. Complains+Help if missing
   if [ -z "$JMX_USER" ] || [ -z "$JMX_PASSWORD" ] || [ -z "$JMX_HOSTNAME" ]; then
@@ -101,6 +111,7 @@ if [ "$JMX_ENABLED" = "true" ]; then
   sed -i "/wrapper.java.additional=-Djava.rmi.server.hostname/s/^#//" $WRAPPER_CONFIG
   sed -i "/wrapper.java.additional=-Djava.rmi.server.hostname/s/\$THE_NEO4J_SERVER_HOSTNAME/$JMX_HOSTNAME/" $WRAPPER_CONFIG
 fi
+
 
 OIFS=$IFS
 if [ ! -z "$CLUSTER_NODES" ]; then

@@ -11,3 +11,4 @@ neo4j:
     JMX_PASSWORD: wayblazer
     JMX_HOSTNAME: localhost
     HTTP_LOG: 'true'
+    QUERY_LOG: 'true'
