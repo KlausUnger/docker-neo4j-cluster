@@ -99,7 +99,7 @@ if [ "$JMX_ENABLED" = "true" ]; then
   sed -i "/^NEO4J_USER/s/NEO4J_USER/$JMX_USER/" $JMX_PASSWORD_FILE
   sed -i '/wrapper.java.additional=-Dcom.sun.management.jmxremote/s/^#//' $WRAPPER_CONFIG
   sed -i "/wrapper.java.additional=-Djava.rmi.server.hostname/s/^#//" $WRAPPER_CONFIG
-  sed -i "/wrapper.java.additional=-Djava.rmi.server.hostname/s/HOST_NAME/$JMX_HOSTNAME/" $WRAPPER_CONFIG
+  sed -i "/wrapper.java.additional=-Djava.rmi.server.hostname/s/\$THE_NEO4J_SERVER_HOSTNAME/$JMX_HOSTNAME/" $WRAPPER_CONFIG
 fi
 
 OIFS=$IFS
