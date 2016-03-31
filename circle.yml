@@ -21,10 +21,9 @@ deployment:
       - docker login -e $DOCKERHUB_EMAIL -u $DOCKERHUB_USER -p $DOCKERHUB_PASSWORD
       - docker push wayblazer/neo4j-cluster:latest
       - export SHORT_SHA=${CIRCLE_SHA1:0:7} && docker push wayblazer/neo4j-cluster:$SHORT_SHA
-  tagged:
-    tag: /[0-9]+(\.[0-9]+)*.*/
+  release:
+    branch: /[0-9]+(\.[0-9]+)*/
     commands:
       - docker login -e $DOCKERHUB_EMAIL -u $DOCKERHUB_USER -p $DOCKERHUB_PASSWORD
-      - docker tag wayblazer/neo4j-cluster:latest wayblazer/neo4j-cluster:$CIRCLE_TAG
-      - docker push wayblazer/neo4j-cluster:latest
-      - docker push wayblazer/neo4j-cluster:$CIRCLE_TAG
+      - docker tag wayblazer/neo4j-cluster:latest wayblazer/neo4j-cluster:$CIRCLE_BRANCH
+      - docker push wayblazer/neo4j-cluster:$CIRCLE_BRANCH
