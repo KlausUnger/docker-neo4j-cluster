@@ -38,14 +38,6 @@ if [ -f /tmp/.lock ]; then
   fi
 fi
 
-# Check of env variable. Complains+Help if missing
-if [ -z "$SERVER_ID" ]; then
-  echo >&2 "--------------------------------------------------------------------------------"
-  echo >&2 "- Missing mandatory SERVER_ID ( for example : docker run -e SERVER_ID=2 .... ) -"
-  echo >&2 "--------------------------------------------------------------------------------"
-  exit 1
-fi
-
 # Customize config
 echo "==> Setting server IP config"
 CONFIG_FILE=/etc/neo4j/neo4j.conf
@@ -53,20 +45,6 @@ WRAPPER_CONFIG=/etc/neo4j/neo4j-wrapper.conf
 SERVER_CONFIG=/etc/neo4j/neo4j-server.properties
 JMX_ACCESS_FILE=/etc/neo4j/jmx.access
 JMX_PASSWORD_FILE=/etc/neo4j/jmx.password
-
-#get the weave interface's ip address
-INTERFACE=eth0
-ifconfig ethwe 1>&2> /dev/null
-if [ $? -eq 0 ]; then
-  INTERFACE=ethwe
-fi
-SERVER_IP=$(ifconfig $INTERFACE | grep 'inet ' | awk '{print $2}')
-OIFS=$IFS
-IFS=':'
-SERVER_IP=$(echo $SERVER_IP | awk '{print $2}')
-IFS=$OIFS
-sed -i 's/SERVER_ID/'$SERVER_ID'/' $CONFIG_FILE
-sed -i 's/SERVER_IP/'$SERVER_IP'/' $CONFIG_FILE
 
 #Set up memory bounds for Neo4j
 sed -i '/wrapper.java.maxmemory/s/^#//' $WRAPPER_CONFIG
@@ -82,11 +60,6 @@ if [ ! -z "$CACHE_MEMORY" ]; then
 fi
 
 echo "==> Global settings"
-if [ "$SERVER_ID" = "1" ]; then
-  # All this node to init the cluster all alone (initial_hosts=127.0.0.1)
-  sed -i '/^ha.allow_init_cluster/s/false/true/' $CONFIG_FILE
-fi
-
 
 if [ "$HTTP_LOG" = "true" ]; then
   sed -i '/^org.neo4j.server.http.log.enabled/s/false/true/' $SERVER_CONFIG
@@ -109,23 +82,7 @@ if [ "$JMX_ENABLED" = "true" ]; then
   sed -i "/wrapper.java.additional=-Djava.rmi.server.hostname/s/\$THE_NEO4J_SERVER_HOSTNAME/$JMX_HOSTNAME/" $WRAPPER_CONFIG
 fi
 
-OIFS=$IFS
-if [ ! -z "$CLUSTER_NODES" ]; then
-  IFS=','
-  for i in $CLUSTER_NODES
-  do
-    sed -i '/^ha.initial_hosts/s/$/'${i%%_*}':5001,/' $CONFIG_FILE
-  done
-  sed -i '/^ha.initial_hosts/s/,$//' $CONFIG_FILE
-fi
-IFS=$OIFS
-
 echo "==> Server settings"
-#Set the database mode and print to logs.
-echo "Setting server mode to $MODE"
-sed -i "/org.neo4j.server.database.mode/s/HA/$MODE/" $CONFIG_FILE
-sed -i 's/^#\(org.neo4j.server.database.mode=\)/\1/' $CONFIG_FILE
-
 if [ "$REMOTE_HTTP" = "true" ]; then
   sed -i '/org.neo4j.server.webserver.address/s/^#//' $CONFIG_FILE
 fi

@@ -12,7 +12,7 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
 RUN wget -O - http://debian.neo4j.org/neotechnology.gpg.key | apt-key add - && \
     echo 'deb http://debian.neo4j.org/repo testing/' > /etc/apt/sources.list.d/neo4j.list
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
-  neo4j-enterprise=3.0.0.M05 \
+  neo4j=3.0.0.M05 \
   supervisor
 
 # cleanup
@@ -42,8 +42,6 @@ ENV REMOTE_HTTP=true \
     ARBITER=false \
     INIT_MEMORY=3000 \
     MAX_MEMORY=3000 \
-    HA=true \
-    MODE=SINGLE \
     HTTP_LOG=false \
     JMX_ENABLED=false
 
