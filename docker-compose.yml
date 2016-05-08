@@ -11,3 +11,6 @@ neo4j:
     JMX_HOSTNAME: localhost
     HTTP_LOG: 'true'
     QUERY_LOG: 'true'
+  volumes:
+    - ./data:/data
+    - ./logs:/logs
