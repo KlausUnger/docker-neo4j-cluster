@@ -12,7 +12,7 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
 RUN wget -O - http://debian.neo4j.org/neotechnology.gpg.key | apt-key add - && \
     echo 'deb http://debian.neo4j.org/repo stable/' > /etc/apt/sources.list.d/neo4j.list
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
-  neo4j=3.0.3 \
+  neo4j=3.0.6 \
   supervisor
 
 # cleanup
